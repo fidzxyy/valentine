@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>Vilante ❤️</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(120deg, #ff7aa2, #ff9ac1);
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* ===== HEARTS ===== */
+.heart {
+  position: absolute;
+  bottom: -30px;
+  animation: floatUp linear infinite;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-130vh); opacity: 0; }
+}
+
+/* ===== CARD ===== */
+.card {
+  position: relative;
+  background: rgba(0,0,0,0.28);
+  padding: 42px;
+  border-radius: 28px;
+  text-align: center;
+  width: 360px;
+  z-index: 10;
+  box-shadow: 0 0 50px rgba(0,0,0,0.4);
+}
+
+/* soft glow */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -50px;
+  background: radial-gradient(
+    circle,
+    rgba(255,182,193,0.55),
+    rgba(255,182,193,0.25),
+    transparent 70%
+  );
+  filter: blur(45px);
+  z-index: -1;
+  animation: glowPulse 8s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%,100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+h1 { margin-bottom: 18px; }
+
+.subtitle {
+  font-size: 0.9rem;
+  opacity: 0.75;
+  margin-bottom: 26px;
+}
+
+/* ===== BUTTONS ===== */
+.buttons {
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+}
+
+button {
+  font-size: 18px;
+  padding: 14px 22px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  animation: bounce 2.5s infinite;
+  position: relative;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.yes { background: #00ff99; }
+.no  { background: #ff4d4d; }
+
+#stage2, #final { display: none; }
+
+/* YES click micro reaction */
+.yes.clicked {
+  animation: yesClick 0.5s ease;
+  box-shadow: 0 0 25px rgba(0,255,153,0.8);
+}
+
+@keyframes yesClick {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* tiny heart pop */
+.tiny-heart {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  animation: popHeart 0.8s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes popHeart {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -20px) scale(1.2); }
+}
+
+/* ===== FINAL ===== */
+#final p {
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+/* ===== SPARKLES ===== */
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle 2s ease forwards;
+}
+
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="heartLayer"></div>
+
+<div class="card" id="card">
+
+  <!-- STAGE 1 -->
+  <div id="stage1">
+    <h1 id="typedText"></h1>
+    <div class="subtitle">I made this instead of sleeping. 😭</div>
+    <div class="buttons">
+      <button class="yes" id="yes1">YES</button>
+      <button class="no" id="no1">NO</button>
+    </div>
+  </div>
+
+  <!-- STAGE 2 -->
+  <div id="stage2">
+    <h1>Ar tikrai? 😳</h1>
+    <div class="buttons" id="swapBox">
+      <button class="yes" id="yes2">OFCOURSEEE!</button>
+      <button class="no" id="no2">lmaoo fuh no</button>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div id="final">
+    <h1>yayyyy you’re my valentine :D</h1>
+    <p>I’m really happy it’s you.</p>
+    <p style="font-size:1.6rem;">❤️</p>
+  </div>
+
+</div>
+
+<script>
+/* ===== TYPING ===== */
+const text = "Vilante, will you be my valentine? 💖";
+let i = 0;
+const typed = document.getElementById("typedText");
+(function type() {
+  if (i < text.length) {
+    typed.textContent += text.charAt(i++);
+    setTimeout(type, 45);
+  }
+})();
+
+/* ===== HEART ENGINE ===== */
+function spawnHeart(big=false) {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerHTML = "💖";
+  h.style.left = Math.random()*100 + "vw";
+  h.style.fontSize = (big ? 42 : 16 + Math.random()*24) + "px";
+  h.style.animationDuration = (big ? 3 : 5 + Math.random()*4) + "s";
+  document.getElementById("heartLayer").appendChild(h);
+  setTimeout(() => h.remove(), 9000);
+}
+setInterval(() => spawnHeart(false), 120);
+
+/* ===== ELEMENTS ===== */
+const stage1 = document.getElementById("stage1");
+const stage2 = document.getElementById("stage2");
+const finalStage = document.getElementById("final");
+
+const yes1 = document.getElementById("yes1");
+const no1  = document.getElementById("no1");
+const yes2 = document.getElementById("yes2");
+const no2  = document.getElementById("no2");
+const swapBox = document.getElementById("swapBox");
+
+/* ===== MICRO REACTIONS ===== */
+function tinyHeart(btn) {
+  const h = document.createElement("span");
+  h.className = "tiny-heart";
+  h.textContent = "💖";
+  btn.appendChild(h);
+  setTimeout(() => h.remove(), 800);
+}
+
+yes1.addEventListener("mouseenter", () => tinyHeart(yes1));
+yes2.addEventListener("mouseenter", () => tinyHeart(yes2));
+
+/* ===== STAGE 1: TELEPORT NO + TEXT ===== */
+function teleportNo() {
+  const texts = ["wait— 😭", "hey 😭"];
+  no1.textContent = texts[Math.floor(Math.random()*texts.length)];
+
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 60);
+  no1.style.position = "fixed";
+  no1.style.left = x + "px";
+  no1.style.top  = y + "px";
+
+  setTimeout(() => no1.textContent = "NO", 500);
+}
+
+no1.addEventListener("mouseenter", teleportNo);
+no1.addEventListener("touchstart", teleportNo);
+
+/* YES → STAGE 2 */
+yes1.addEventListener("click", () => {
+  yes1.classList.add("clicked");
+  setTimeout(() => {
+    no1.style.position = "static";
+    stage1.style.display = "none";
+    stage2.style.display = "block";
+  }, 400);
+});
+
+/* ===== STAGE 2: INFINITE SWAP ===== */
+let flipped = false;
+function swapButtons() {
+  swapBox.appendChild(flipped ? yes2 : no2);
+  swapBox.appendChild(flipped ? no2 : yes2);
+  flipped = !flipped;
+}
+no2.addEventListener("mouseenter", swapButtons);
+no2.addEventListener("touchstart", swapButtons);
+
+/* ===== FINAL ===== */
+yes2.addEventListener("click", () => {
+  yes2.classList.add("clicked");
+  setTimeout(() => {
+    stage2.style.display = "none";
+    finalStage.style.display = "block";
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => spawnHeart(true), i * 50);
+    }
+  }, 350);
+});
+
+/* ===== SPARKLES ===== */
+setInterval(() => {
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  const r = document.getElementById("card").getBoundingClientRect();
+  s.style.left = r.left + Math.random()*r.width + "px";
+  s.style.top  = r.top  + Math.random()*r.height + "px";
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 2000);
+}, 400);
+</script>
+
+</body>
+</html>
